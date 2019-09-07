@@ -1,0 +1,6 @@
+<header class="page-header">
+    <view><span>ToDoList</span></view>
+    <view>
+        <input type="text" placeholder="添加ToDo" auto-focus />
+    </view>
+</header>
