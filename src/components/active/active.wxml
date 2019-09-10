@@ -1,0 +1,14 @@
+<view class="comp-complete">
+    <view class="top">
+        <h1 class="title">正在进行</h1>
+        <span class="total">1111</span>
+    </view>
+    <view class="bottom">
+        <ul class="item-container">
+            <li class="item">
+                <span class="text">111</span>
+                <span class="delete">x</span>
+            </li>
+        </ul>
+    </view>
+</view>

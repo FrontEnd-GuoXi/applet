@@ -7,4 +7,9 @@
         @return $px;
     }
     @return $px * (750 / $layout) * 1rpx;
-  }   
+  }
+
+
+.page-paddingRL{
+    padding: 0 px2rpx(20px);
+}

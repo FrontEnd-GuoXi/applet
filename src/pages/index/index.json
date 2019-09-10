@@ -1,5 +1,7 @@
 {
   "usingComponents": {
-    "van-button": "vant-weapp/button"
+    "my-header": "/components/header/todoHeader",
+    "my-complete": "/components/complete/complete",
+    "my-active": "/components/active/active"
   } 
 }

@@ -1,6 +1,8 @@
-<header class="page-header">
-    <view><span>ToDoList</span></view>
-    <view>
-        <input type="text" placeholder="添加ToDo" auto-focus />
+<header class="comp-header">
+    <view class="comp-header-title">
+        <span>ToDoList</span>
+    </view>
+    <view class="comp-header-in">
+        <input type="text" class="text-in" placeholder="添加ToDo" value="{{ text }}" auto-focus />
     </view>
 </header>

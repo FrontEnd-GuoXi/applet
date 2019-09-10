@@ -1,0 +1,30 @@
+@import './base.scss';
+
+.item-style {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.top {
+    @extend .item-style;
+    @extend .page-paddingRL;
+    background-color: bisque;
+    height: px2rpx(150px);
+}
+
+.item-container {
+    display: flex;
+    list-style: none; 
+}
+
+.item {
+    height: px2rpx(100px);
+    @extend .item-style;
+    @extend .page-paddingRL;
+    color: aliceblue;
+    background-color: black;
+    margin: px2rpx(30px) 0;
+}

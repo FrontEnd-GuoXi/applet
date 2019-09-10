@@ -1,3 +1,3 @@
 module.exports = {
-    cssFilterFiles: ['style/base.scss']
+    cssFilterFiles: ['base.scss']
 };
