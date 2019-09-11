@@ -1,8 +1,12 @@
 <header class="comp-header">
     <view class="comp-header-title">
-        <span>ToDoList</span>
+        <button type="butto" size="defaultSize"
+         bindtap="submit" 
+        hover-class="defaultTap">提交</button>
     </view>
     <view class="comp-header-in">
-        <input type="text" class="text-in" placeholder="添加ToDo" value="{{ text }}" auto-focus />
+        <input type="text" class="text-in"
+            placeholder="添加ToDo"
+        auto-focus value="{{ text }}" bindinput="setText"/>
     </view>
 </header>

@@ -1,24 +1,30 @@
  // components/component-tag-name.js
 Component({
-    /**
-     * 组件的属性列表
-     */
-    properties: {
-  
-    },
-  
-    /**
-     * 组件的初始数据
-     */
+    properties: {},
     data: {
-      text: '请输入一个todo'
+      text: '',
+      app: null
     },
-  
-    /**
-     * 组件的方法列表
-     */
     methods: {
-  
+      submit (event) {        
+        let newList = JSON.parse(JSON.stringify(this.data.app.globalData.activeList));
+        console.log(this.data.app.globalData.activeList)
+        newList.push(this.data.text);
+        this.data.app.globalData.activeList = newList;
+        this.setData({text: ''});
+      },
+      setText (event) {
+        console.log('...',event)
+       this.setData({text: event.detail.value})
+      }
+    },
+    lifetimes: {
+      attached () {
+        console.log('header....')
+        const app = getApp();
+        this.setData({app});
+        console.log(this.data.app)
+      }
     }
   })
   
