@@ -1,8 +1,0 @@
-<!--index.wxml-->
-<view class="container">
-    <my-header></my-header>
-    <view>
-        <my-active></my-active>
-        <my-complete></my-complete>
-    </view>
-</view> 
