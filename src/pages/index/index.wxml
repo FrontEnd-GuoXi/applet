@@ -1,0 +1,12 @@
+<!--index.wxml-->
+<view class="container">
+  <view class="top-tab">
+    <view class="top-tab-item {{currentTopItem === idx ? 'active' : ''}}" 
+          wx:for="{{topTabItems}}"
+          wx:for-index="idx"
+          data-idx="{{idx}}"
+          bindtap="switchTab">
+      {{item}}
+    </view>
+  </view>
+</view>

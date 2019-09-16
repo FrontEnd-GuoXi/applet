@@ -16,45 +16,59 @@ const stream = require('stream');
 
 const hasRmCssFiles = new Set();
 
-function proCompile() {
+async function proCompile () {
+    try {
+        await devCopyFile();
+        return await devCompileScss();
+    } catch (error) {
+        console.warn('构建报错了_____',error);
+        return Promise.reject(error);
+    }
+}
+
+function devCopyFile () {
+    return gulp.src(['./src/**','!./src/**/*.{scss,wxss}']).pipe(gulp.dest('./dist'));
+}
+
+function devCompileScss () {
     return gulp.src('./src/**/*.{scss,wxss}').pipe(tap((file) => {
-            // 当前处理文件的路径
-            const filePath = path.dirname(file.path);
-            // 当前处理内容
-            const content = file.contents.toString();
-            // 找到filter的scss，并匹配是否在配置文件中
-            content.replace(/@import\s+['|"](.+)['|"];/g, ($1, $2) => {
-                // /@import\s+['|"](.+)['|"];/g 匹配 import语句。 $2就是这个语句后面的文件路径
+        // 当前处理文件的路径
+        const filePath = path.dirname(file.path);
+        // 当前处理内容
+        const content = file.contents.toString();
+        // 找到filter的scss，并匹配是否在配置文件中
+        content.replace(/@import\s+['|"](.+)['|"];/g, ($1, $2) => {
+            // /@import\s+['|"](.+)['|"];/g 匹配 import语句。 $2就是这个语句后面的文件路径
 
-                const hasFilter = config.cssFilterFiles.filter(item => $2.indexOf(item) > -1);
-                // hasFilter > 0表示filter的文件在配置文件中，打包完成后需要删除
+            const hasFilter = config.cssFilterFiles.filter(item => $2.indexOf(item) > -1);
+            // hasFilter > 0表示filter的文件在配置文件中，打包完成后需要删除
 
-                // 将需要删掉的文件放到dist目录下面去
-                if (hasFilter.length > 0) {
-                    const rmPath = path.join(filePath, $2);
-                    // 将src改为dist，.scss改为.wxss，例如：'/xxx/src/scss/const.scss' => '/xxx/dist/scss/const.wxss'
-                    const filea = rmPath.replace(/src/, 'dist').replace(/\.scss/, '.wxss');
-                    // 加入待删除列表
-                    hasRmCssFiles.add(filea);
-                }
-
-            });
-        }))
-        .pipe(replace(/(@import.+;)/g, ($1, $2) => {
-            // 这个函数的逻辑是注释掉import语句
-
-            const hasFilter = config.cssFilterFiles.filter(item => $1.indexOf(item) > -1);
+            // 将需要删掉的文件放到dist目录下面去
             if (hasFilter.length > 0) {
-                return $2;
+                const rmPath = path.join(filePath, $2);
+                // 将src改为dist，.scss改为.wxss，例如：'/xxx/src/scss/const.scss' => '/xxx/dist/scss/const.wxss'
+                const filea = rmPath.replace(/src/, 'dist').replace(/\.scss/, '.wxss');
+                // 加入待删除列表
+                hasRmCssFiles.add(filea);
             }
-            return `/** ${$2} **/`;
-        }))
-        .pipe(sass().on('error', sass.logError))
-        .pipe(replace(/(\/\*\*\s{0,})(@.+)(\s{0,}\*\*\/)/g, ($1, $2, $3) => $3.replace(/\.scss/g, '.wxss')))
-        .pipe(rename({
-            extname: '.wxss',
-        }))
-        .pipe(gulp.dest('./dist'));
+
+        });
+    }))
+    .pipe(replace(/(@import.+;)/g, ($1, $2) => {
+        // 这个函数的逻辑是注释掉import语句
+
+        const hasFilter = config.cssFilterFiles.filter(item => $1.indexOf(item) > -1);
+        if (hasFilter.length > 0) {
+            return $2;
+        }
+        return `/** ${$2} **/`;
+    }))
+    .pipe(sass().on('error', sass.logError))
+    .pipe(replace(/(\/\*\*\s{0,})(@.+)(\s{0,}\*\*\/)/g, ($1, $2, $3) => $3.replace(/\.scss/g, '.wxss')))
+    .pipe(rename({
+        extname: '.wxss',
+    }))
+    .pipe(gulp.dest('./dist'));
 }
 
 gulp.task('build', () => {
