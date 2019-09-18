@@ -9,25 +9,52 @@ const config = require('./build/config');
 const watch = require('gulp-watch');
 const fs = require('fs');
 const stream = require('stream');
+const postcss = require('gulp-postcss');
+const autoprefixer = require('autoprefixer');
+const eslint = require('gulp-eslint');
+const htmlmin = require('gulp-htmlmin');
+const minifycss = require('gulp-minify-css');
+const uglify = require('gulp-uglify');
+const pipeline = require('readable-stream').pipeline;
+
+const hasRmCssFiles = new Set();
+const dirSet = new Set();
 
 // 所有的样式文件都是sass文件，除了存放sass变量和sass函数的sass文件，不需要注释掉import语句外
 // 其他的都需要注释掉，编译成单独的文件，
 // 这样防止了单文件wxss过大的问题
 
-const hasRmCssFiles = new Set();
-
 async function proCompile () {
     try {
-        await devCopyFile();
-        return await devCompileScss();
+        // await disposeJS();
+        // await disposeWXML();
+        await devCompileScss();
+        return await proCopyFile();
     } catch (error) {
         console.warn('构建报错了_____',error);
         return Promise.reject(error);
     }
 }
 
-function devCopyFile () {
-    return gulp.src(['./src/**','!./src/**/*.{scss,wxss}']).pipe(gulp.dest('./dist'));
+// function disposeJS () {
+//   return  gulp.src('./src/**/*.{js}').pipe(uglify({compress: true})).pipe(gulp.dest('./dist'));
+//     return pipeline(
+//         gulp.src('./src/**/*.{js}'),
+//         uglify(),
+//         gulp.dest('./dist')
+//   );
+// }
+
+// function disposeWXML () {
+//     return gulp.src(['./src/**/.wxml']).pipe(htmlmin({
+//         collapseWhitespace: true,
+//         removeComments: true,
+//         keepClosingSlash: true
+//       })).pipe(gulp.dest('./dist'));
+// }
+
+function proCopyFile () {
+    return gulp.src(['./src/**','!./src/**/*.{scss, wxss}']).pipe(gulp.dest('./dist'));
 }
 
 function devCompileScss () {
@@ -64,6 +91,7 @@ function devCompileScss () {
         return `/** ${$2} **/`;
     }))
     .pipe(sass().on('error', sass.logError))
+    .pipe(postcss([autoprefixer(['iOS>=8', 'Android>=4.1'])]))
     .pipe(replace(/(\/\*\*\s{0,})(@.+)(\s{0,}\*\*\/)/g, ($1, $2, $3) => $3.replace(/\.scss/g, '.wxss')))
     .pipe(rename({
         extname: '.wxss',
@@ -89,6 +117,8 @@ gulp.task('clean:wxss', () => {
 });
 
 gulp.task('default', function () {
+
+
     watch('./src/**', (vinyl) => {
         let targetPath = path.normalize(vinyl.path.replace(/src/g, 'dist'));
         let targetDir = path.dirname(targetPath);
@@ -110,7 +140,8 @@ gulp.task('default', function () {
         
     });
     return true
-})
+});
+
 
 function copyFile(bufferStream, dist) {
     const dir = path.dirname(dist);
@@ -121,8 +152,6 @@ function copyFile(bufferStream, dist) {
 }
 
 
-
-const dirSet = new Set();
 // 递归创建文件
 function makeDir (dir) {
     if (!fs.existsSync(dir)) {
@@ -153,6 +182,7 @@ function devCompile(stream, dist) {
             return `/** ${$2} **/`;
         }))
         .pipe(sass().on('error', sass.logError))
+        .pipe(postcss([autoprefixer(['iOS>=8', 'Android>=4.1'])]))
         .pipe(replace(/(\/\*\*\s{0,})(@.+)(\s{0,}\*\*\/)/g, ($1, $2, $3) => $3.replace(/\.scss/g, '.wxss')))
         .pipe(rename({extname: '.wxss'}))
         .pipe(gulp.dest(dist))

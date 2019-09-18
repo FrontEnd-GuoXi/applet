@@ -1,0 +1,34 @@
+<view class="recommend-page">
+    <view class="left">
+        <scroll-view>
+            <view class="nav-item {{ activeId === item.id ? 'active' : ''  }}" 
+                  wx:for="{{leftList}}"
+                  bindtap="selectItem"
+                  data-idx="{{item.id}}">
+                {{ item.name }}
+            </view>
+        </scroll-view>
+    </view>
+    <view class="right">
+        <scroll-view class="list-wrap" scroll-top="1000px" scroll-y="true"> 
+            <view wx:for="{{rightList}}" data-uid="{{item.uid}}" class="card-item">
+                <view class="card-left">
+                    <view class="card-img-wrap">
+                        <image src="{{item.header}}" ></image>
+                    </view>
+                    <view class="card-detail">
+                        <view>
+                            {{item.screen_name}}
+                        </view>
+                        <view>
+                            {{ item.tiezi_count }}
+                         </view>
+                    </view>
+                </view>
+                <view class="card-right">
+                    <button>关注他</button>
+                </view>
+            </view>
+        </scroll-view>
+    </view>
+</view>

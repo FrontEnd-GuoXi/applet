@@ -1,4 +1,6 @@
 /**index.wxss**/
+@import "../common/mainTabCell.wxss";
+
 .top-tab{
   height:36px;
   width: 750rpx;
@@ -35,6 +37,7 @@
   border: 0;
   margin-top: 37px;
   background-color: #eaeaea;
+  height: calc(100% - 37px);
 }
 
 

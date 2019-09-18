@@ -18,24 +18,22 @@ function formatNumber(n) {
   return n[1] ? n : '0' + n
 }
 
-//网络请求
-function request(parameters = "", success, method = "GET", header = {}) {
-  wx.request({
-    url: config.BaseURL + (method == "GET" ? "?" : "") + parameters,
-    data: {},
-    method: method, // OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT
-    header: header ? header : "application/json", // 设置请求的 header
-    success: function (res) {
-      console.log(res);
-      success(res);
-    },
-    fail: function () {
-      // fail
-    },
-    complete: function () {
-      // complete
-    }
-  })
+
+function request ({parameters, method, header}) {
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: config.BaseURL + (method == "GET" ? "?" : "") + parameters,
+      data: {},
+      method: method, // OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT
+      header: header,
+      success: function (res) {
+        resolve(res)
+      },
+      fail: function (err) {
+        reject(err)
+      }
+    })
+  });
 }
 
 //HUD 
